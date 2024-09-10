@@ -1,25 +1,45 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import LoginForm from './LoginForm'
 
 class LoginView extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      playerName: '',
+      opponentCount: 1
+    }
     this.handleLogin = this.handleLogin.bind(this)
+    this.handleChange = this.handleChange.bind(this)
   }
 
   static propTypes = {
     navigateTo: PropTypes.func.isRequired
   }
   
-  handleLogin() {
+  handleLogin(event) {
+    event.preventDefault()
+    const { playerName, opponentCount } = this.state
+    if (playerName === '' || opponentCount < 1 || opponentCount > 8) return
     this.props.navigateTo('game')
+  }
+
+  handleChange(id, value) {
+    this.setState({
+      [id]: value
+    })
   }
   
   render() {
+    const { playerName, opponentCount } = this.state
     return (
-      <div>
-        <h1>Login View Page</h1>
-        <button onClick={this.handleLogin}>Login</button>
+      <div className="flex justify-center">
+        <LoginForm
+          playerName={playerName}
+          opponentCount={opponentCount}
+          onChange={this.handleChange}
+          onSubmit={this.handleLogin}
+        />
       </div>
     )
   }
