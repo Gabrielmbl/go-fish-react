@@ -7,25 +7,35 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentView: 'login'
+      currentView: 'login',
+      playerName: '',
+      opponentCount: 1,
     }
     this.navigateTo = this.navigateTo.bind(this)
+    this.handleSetPlayerInfo = this.handleSetPlayerInfo.bind(this)
   }
 
   navigateTo(view) {
     this.setState({ currentView: view })
   }
 
+  handleSetPlayerInfo(playerName, opponentCount) {
+    this.setState({
+      playerName,
+      opponentCount
+    })
+  }
+
   render() {
-    const { currentView } = this.state
+    const { currentView, playerName, opponentCount } = this.state
     let viewComponent
 
     switch (currentView) {
       case 'login':
-        viewComponent = <LoginView navigateTo={this.navigateTo} />
+        viewComponent = <LoginView navigateTo={this.navigateTo} setPlayerInfo={this.handleSetPlayerInfo}/>
         break
       case 'game':
-        viewComponent = <GameView navigateTo={this.navigateTo} />
+        viewComponent = <GameView navigateTo={this.navigateTo} playerName={playerName} opponentCount={opponentCount}/>
         break
       case 'end-game':
         viewComponent = <EndGameView navigateTo={this.navigateTo} />

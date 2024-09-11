@@ -14,13 +14,15 @@ class LoginView extends React.Component {
   }
 
   static propTypes = {
-    navigateTo: PropTypes.func.isRequired
+    navigateTo: PropTypes.func.isRequired,
+    setPlayerInfo: PropTypes.func.isRequired,
   }
   
   handleLogin(event) {
     event.preventDefault()
     const { playerName, opponentCount } = this.state
     if (playerName === '' || opponentCount < 1 || opponentCount > 8) return
+    this.props.setPlayerInfo(playerName, opponentCount)
     this.props.navigateTo('game')
   }
 
