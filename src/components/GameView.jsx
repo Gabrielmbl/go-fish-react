@@ -24,14 +24,20 @@ class GameView extends React.Component {
 
   render() {
     return (
-      <div>
-        <h1>Game View Page</h1>
-        <div>
+      <div className="game-view">
+        <div className="game-board">
+          <h1>Game View Page</h1>
+        </div>
+        <div className="game-feed">
           <span>Player name: {this.props.playerName}</span><br></br>
           <span>Number of opponents: {this.props.opponentCount}</span>
         </div>
-        <button onClick={this.handleNavigateToLogin}>Go to Login View</button>
-        <button onClick={this.handleNavigateToEndGame}>Go to End Game View</button>
+        <div className="player-hand">
+          <button onClick={this.handleNavigateToLogin}>Go to Login View</button>
+        </div>
+        <div className="player-books">
+          <button onClick={this.handleNavigateToEndGame}>Go to End Game View</button>
+        </div>
       </div>
     )
   }
