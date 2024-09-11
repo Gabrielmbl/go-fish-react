@@ -6,9 +6,9 @@ export default defineConfig({
   plugins: [react()],
   test: {
     browser: {
-      provider: 'preview',
+      provider: 'preview', //playwright',
       enabled: true,
-      name: 'chrome',
+      name: 'chrome', // browser name is required
     },
-  }
+  },
 })
