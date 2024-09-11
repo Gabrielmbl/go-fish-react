@@ -5,6 +5,8 @@ import LoginForm from './LoginForm'
 class LoginView extends React.Component {
   constructor(props) {
     super(props)
+    // TODO: Don't store the state here, just in App
+    // TODO: Have it so that onSubmit, it will send the state from Form to App
     this.state = {
       playerName: '',
       opponentCount: 1
