@@ -1,4 +1,5 @@
-import { describe, it, expect, vi, render, screen } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
 import GameView from '../components/GameView'
 
 describe('GameView', () => {
@@ -12,7 +13,8 @@ describe('GameView', () => {
     render(<GameView {...defaultProps} />)
 
     expect(screen.getByText('Game View Page')).toBeInTheDocument()
-    expect(screen.getByText('Gabriel')).toBeInTheDocument()
-    expect(screen.getByText('3')).toBeInTheDocument()
+
+    expect(screen.getByText((content) => content.includes('Player name: Gabriel'))).toBeInTheDocument()
+    expect(screen.getByText((content) => content.includes('Number of opponents: 3'))).toBeInTheDocument()
   })
 })
