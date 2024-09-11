@@ -1,42 +1,52 @@
-import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { cleanup, render, screen } from '@testing-library/react'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { userEvent } from '@vitest/browser/context'
 import LoginView from '../components/LoginView'
 
 describe('LoginView', () => {
-  it('renders correctly', () => {
-    const navigateTo = vi.fn()
-    render(<LoginView navigateTo={navigateTo} />)
+  let navigateTo, setPlayerInfo
 
-    expect(screen.getByText('Login View Page')).toBeInTheDocument()
+  const defaultProps = {
+    navigateTo: () => {},
+    setPlayerInfo: () => {},
+  }
+
+  beforeEach(() => {
+    navigateTo = vi.spyOn(defaultProps, 'navigateTo')
+    setPlayerInfo = vi.spyOn(defaultProps, 'setPlayerInfo')
+  })
+
+  afterEach(() => {
+    cleanup()
+  })
+
+  const mockRenderLoginView = () => {
+    render(<LoginView navigateTo={navigateTo} setPlayerInfo={setPlayerInfo} />)
+  }
+
+  it('renders correctly', () => {
+    mockRenderLoginView()
+
     expect(screen.getByLabelText('Your name')).toBeInTheDocument()
     expect(screen.getByLabelText('Number of Opponents')).toBeInTheDocument()
   })
 
   it('calls navigateTo with "game" when valid input is provided and form is submitted', async () => {
-    const navigateTo = vi.fn()
-    render(<LoginView navigateTo={navigateTo} />)
+    mockRenderLoginView()
 
     await userEvent.type(screen.getByLabelText('Your name'), 'Player 1')
-    await userEvent.type(screen.getByLabelText('Number of Opponents'), '3')
+    await userEvent.selectOptions(screen.getByLabelText('Number of Opponents'), '3')
 
-    await userEvent.click(screen.getByRole('button', { name: /submit/i }))
+    await userEvent.click(screen.getByTestId('start-game-button'))
 
     expect(navigateTo).toHaveBeenCalledWith('game')
   })
 
   it('does not call navigateTo if playerName is empty or opponentCount is invalid', async () => {
-    const navigateTo = vi.fn()
-    render(<LoginView navigateTo={navigateTo} />)
+    mockRenderLoginView()
 
-    await userEvent.type(screen.getByLabelText('Number of Opponents'), '3')
-    await userEvent.click(screen.getByRole('button', { name: /submit/i }))
-    expect(navigateTo).not.toHaveBeenCalled()
-
-    await userEvent.type(screen.getByLabelText('Your name'), 'gabriel')
-    await userEvent.clear(screen.getByLabelText('Number of Opponents'))
-    await userEvent.type(screen.getByLabelText('Number of Opponents'), '9') 
-    await userEvent.click(screen.getByRole('button', { name: /submit/i }))
+    await userEvent.selectOptions(screen.getByLabelText('Number of Opponents'), '3')
+    await userEvent.click(screen.getByTestId('start-game-button'))
     expect(navigateTo).not.toHaveBeenCalled()
   })
 })
