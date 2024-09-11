@@ -1,7 +1,7 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { userEvent } from '@vitest/browser/context'
-import LoginView from '../components/LoginView'
+import LoginView from '../../components/LoginView'
 
 describe('LoginView', () => {
   let navigateTo, setPlayerInfo

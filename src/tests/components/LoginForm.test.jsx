@@ -1,7 +1,7 @@
 import { cleanup, render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { userEvent } from '@vitest/browser/context'
-import LoginForm from '../components/LoginForm'
+import LoginForm from '../../components/LoginForm'
 
 describe('LoginForm', () => {
   let onChange
