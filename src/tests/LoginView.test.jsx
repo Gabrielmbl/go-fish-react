@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
-import userEvent from '@testing-library/user-event'
+import { userEvent } from '@vitest/browser/context'
 import LoginView from '../components/LoginView'
 
 describe('LoginView', () => {

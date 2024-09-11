@@ -1,5 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { userEvent } from '@vitest/browser/context'
 import LoginForm from '../components/LoginForm'
 
 describe('LoginForm', () => {
@@ -28,38 +29,34 @@ describe('LoginForm', () => {
     expect(screen.getByText('Start Game')).toBeInTheDocument()
   })
 
-  it('calls onChange when playerName is changed', () => {
+  it('calls onChange when playerName is changed', async () => {
     render(<LoginForm {...defaultProps} />)
 
-    fireEvent.change(screen.getByLabelText('Your name'), {
-      target: { value: 'New Player' },
-    })
+    await userEvent.type(screen.getByLabelText('Your name'), 'New Player')
 
     expect(onChange).toHaveBeenCalledWith('playerName', 'New Player')
   })
 
-  it('calls onChange when opponentCount is changed', () => {
+  it('calls onChange when opponentCount is changed', async () => {
     render(<LoginForm {...defaultProps} />)
 
-    fireEvent.change(screen.getByLabelText('Number of Opponents'), {
-      target: { value: '5' },
-    })
+    await userEvent.type(screen.getByLabelText('Number of Opponents'), '5')
 
     expect(onChange).toHaveBeenCalledWith('opponentCount', '5')
   })
 
-  it('calls onSubmit when the form is submitted', () => {
+  it('calls onSubmit when the form is submitted', async () => {
     render(<LoginForm {...defaultProps} />)
 
-    fireEvent.submit(screen.getByRole('form'))
+    await userEvent.click(screen.getByRole('button', { name: /Start Game/i }))
 
     expect(onSubmit).toHaveBeenCalledTimes(1)
   })
 
-  it('does not call onSubmit if form is incomplete', () => {
+  it('does not call onSubmit if form is incomplete', async () => {
     render(<LoginForm {...defaultProps} playerName="" />)
 
-    fireEvent.submit(screen.getByRole('form'))
+    await userEvent.click(screen.getByRole('button', { name: /Start Game/i }))
 
     expect(onSubmit).not.toHaveBeenCalled()
   })
