@@ -25,7 +25,7 @@ class LoginView extends React.Component {
     this.props.setPlayerInfo(playerName, opponentCount)
     this.props.navigateTo('game')
   }
-  // TODO: see article for using setState as a function
+  
   handleChange(id, value) {
     this.setState({
       [id]: value
