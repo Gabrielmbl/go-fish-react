@@ -32,7 +32,12 @@ class App extends React.Component {
 
     switch (currentView) {
       case 'login':
-        viewComponent = <LoginView navigateTo={this.navigateTo} setPlayerInfo={this.handleSetPlayerInfo}/>
+        viewComponent = (
+          <LoginView 
+            onSubmit={this.handleSetPlayerInfo}
+            navigateTo={this.navigateTo} 
+          />
+        )
         break
       case 'game':
         viewComponent = <GameView navigateTo={this.navigateTo} playerName={playerName} opponentCount={opponentCount}/>

@@ -1,51 +1,30 @@
-import { cleanup, render, screen } from '@testing-library/react'
+import { render, screen, cleanup } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { userEvent } from '@vitest/browser/context'
+import userEvent from '@testing-library/user-event'
 import LoginForm from '../../components/LoginForm'
 
 describe('LoginForm', () => {
-  let onChange
-
-  const defaultProps = {
-    playerName: 'Player 1',
-    opponentCount: 3,
-    onChange: () => {},
-  }
+  const mockOnSubmit = vi.fn()
 
   beforeEach(() => {
-    onChange = vi.spyOn(defaultProps, 'onChange')
+    render(<LoginForm onSubmit={mockOnSubmit} />)
   })
 
   afterEach(() => {
     cleanup()
-    onChange.mockRestore()
-  })
-    
-  const mockRenderLoginForm = () => {
-    render(<LoginForm {...defaultProps} />)
-  }
-
-  it('renders correctly', () => {
-    mockRenderLoginForm()
-
-    const form = screen.getByTestId('login-form')
-    expect(form).toBeInTheDocument()
-    expect(screen.getByLabelText('Your name')).toBeInTheDocument()
-    expect(screen.getByLabelText('Number of Opponents')).toBeInTheDocument()
-    expect(screen.getByDisplayValue('Player 1')).toBeInTheDocument()
-    expect(screen.getByDisplayValue('3')).toBeInTheDocument()
-    expect(screen.getByText('Start Game')).toBeInTheDocument()
+    vi.clearAllMocks()
   })
 
-  it('calls onChange when playerName is changed', async () => {
-    mockRenderLoginForm()
+  it('calls onSubmit with playerName and opponentCount when the form is submitted', async () => {
+    const playerNameInput = screen.getByLabelText(/Your name/i)
+    const opponentCountSelect = screen.getByLabelText(/Number of Opponents/i)
+    const submitButton = screen.getByRole('button', { name: /Start Game/i })
 
-    const nameInput = screen.getByLabelText('Your name')
-  
-    await userEvent.clear(nameInput)
-    await userEvent.type(nameInput, 'New Player')
-    
-    expect(onChange).toHaveBeenCalled()
+    await userEvent.type(playerNameInput, 'Gabriel')
+    await userEvent.selectOptions(opponentCountSelect, '3')
+
+    await userEvent.click(submitButton)
+
+    expect(mockOnSubmit).toHaveBeenCalledWith('Gabriel', 3)
   })
-
 })

@@ -1,52 +1,60 @@
-import { cleanup, render, screen } from '@testing-library/react'
+import { render, screen, cleanup } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { userEvent } from '@vitest/browser/context'
+import userEvent from '@testing-library/user-event'
 import LoginView from '../../components/LoginView'
 
 describe('LoginView', () => {
-  let navigateTo, setPlayerInfo
-
-  const defaultProps = {
-    navigateTo: () => {},
-    setPlayerInfo: () => {},
-  }
+  const mockNavigateTo = vi.fn()
+  const mockOnSubmit = vi.fn()
 
   beforeEach(() => {
-    navigateTo = vi.spyOn(defaultProps, 'navigateTo')
-    setPlayerInfo = vi.spyOn(defaultProps, 'setPlayerInfo')
+    render(<LoginView navigateTo={mockNavigateTo} onSubmit={mockOnSubmit} />)
   })
 
   afterEach(() => {
     cleanup()
+    vi.clearAllMocks()
   })
 
-  const mockRenderLoginView = () => {
-    render(<LoginView navigateTo={navigateTo} setPlayerInfo={setPlayerInfo} />)
-  }
-
-  it('renders correctly', () => {
-    mockRenderLoginView()
-
-    expect(screen.getByLabelText('Your name')).toBeInTheDocument()
-    expect(screen.getByLabelText('Number of Opponents')).toBeInTheDocument()
+  it('renders the form with player name input and opponent count select', () => {
+    expect(screen.getByLabelText(/Your name/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/Number of Opponents/i)).toBeInTheDocument()
+    const submitButton = screen.getByRole('button', { name: /Start Game/i })
+    expect(submitButton).toBeInTheDocument()
   })
 
-  it('calls navigateTo with "game" when valid input is provided and form is submitted', async () => {
-    mockRenderLoginView()
+  it('allows input changes and updates form state', async () => {
+    const playerNameInput = screen.getByLabelText(/Your name/i)
+    const opponentCountSelect = screen.getByLabelText(/Number of Opponents/i)
 
-    await userEvent.type(screen.getByLabelText('Your name'), 'Player 1')
-    await userEvent.selectOptions(screen.getByLabelText('Number of Opponents'), '3')
+    await userEvent.type(playerNameInput, 'Gabriel')
+    await userEvent.selectOptions(opponentCountSelect, '3')
 
-    await userEvent.click(screen.getByTestId('start-game-button'))
-
-    expect(navigateTo).toHaveBeenCalledWith('game')
+    expect(playerNameInput.value).toBe('Gabriel')
+    expect(opponentCountSelect.value).toBe('3')
   })
 
-  it('does not call navigateTo if playerName is empty or opponentCount is invalid', async () => {
-    mockRenderLoginView()
+  it('submits form and calls onSubmit with correct data', async () => {
+    const playerNameInput = screen.getByLabelText(/Your name/i)
+    const opponentCountSelect = screen.getByLabelText(/Number of Opponents/i)
+    const submitButton = screen.getByRole('button', { name: /Start Game/i })
 
-    await userEvent.selectOptions(screen.getByLabelText('Number of Opponents'), '3')
-    await userEvent.click(screen.getByTestId('start-game-button'))
-    expect(navigateTo).not.toHaveBeenCalled()
+    await userEvent.type(playerNameInput, 'Gabriel')
+    await userEvent.selectOptions(opponentCountSelect, '3')
+    await userEvent.click(submitButton)
+
+    expect(mockOnSubmit).toHaveBeenCalledWith('Gabriel', 3)
+    expect(mockNavigateTo).toHaveBeenCalledWith('game')
+  })
+
+  it('prevents form submission with invalid data', async () => {
+    const playerNameInput = screen.getByLabelText(/Your name/i)
+    const submitButton = screen.getByRole('button', { name: /Start Game/i })
+
+    await userEvent.clear(playerNameInput)
+    await userEvent.click(submitButton)
+
+    expect(mockOnSubmit).not.toHaveBeenCalled()
+    expect(mockNavigateTo).not.toHaveBeenCalled()
   })
 })
