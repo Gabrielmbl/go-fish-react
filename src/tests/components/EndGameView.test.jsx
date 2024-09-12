@@ -9,7 +9,6 @@ describe('EndGameView', () => {
     cleanup()
   })
 
-
   const mockNavigateTo = vi.fn()
 
   it('renders a single winner when there is one winner', () => {

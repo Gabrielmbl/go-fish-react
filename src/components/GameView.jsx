@@ -71,58 +71,68 @@ class GameView extends React.Component {
     )
   }
 
+  renderBooks(player) {
+    const books = player.books().flatMap((book) =>
+      book.cards().map(card => `${card.rank()} of ${card.suit()}`)
+    ).join(', ')
+    return (
+      <div className="player-books">
+        {books || 'No books yet'}
+      </div>
+    )
+  }
+
   renderPlayerView() {
     const player = this.props.game.players().find(player => !(player instanceof Bot))
     if (!player) return null
-
+  
+    const hand = player.hand().map(card => `${card.rank()} of ${card.suit()}`).join(', ')
+  
     return (
       <li className="player-name">
         {player.name()}
         <br />
         <span>Hand:</span>
-        <ul className="player-hand">
-          {player.hand().map((card) => (
-            <li key={`${card.rank()}-${card.suit()}`}>{card.rank()} of {card.suit()}</li>
-          ))}
-        </ul>
-        <span>Books:</span>
-        <ul className="player-books">
-          {player.books().length === 0 ? 'No books yet' : player.books().flatMap((book, bookIndex) =>
-            book.cards().map((card) => (
-              <li key={`${bookIndex}-${card.rank()}-${card.suit()}`}>{card.rank()} of {card.suit()}</li>
-            ))
-          )}
-        </ul>
+        <div className="player-hand">
+          {hand || 'No cards in hand'}
+        </div>
+        {this.renderBooks(player)}
       </li>
     )
   }
+  
 
   renderBotView() {
     // const bots = this.props.game.players().filter(player => player instanceof Bot)
     const bots = this.props.game.players().slice(1)
+  
     return (
       <>
-        {bots.map(bot => (
-          <li className="player-name" key={bot.name()}>
-            {bot.name()}
-            <br />
-            <span>Hand:</span>
-            <ul className="player-hand">
-              {bot.hand().map((card) => (
-                <li key={`${card.rank()}-${card.suit()}`}>{card.rank()} of {card.suit()}</li>
-              ))}
-            </ul>
-            <span>Books:</span>
-            <ul className="player-books">
-              {bot.books().length === 0 ? 'No books yet' : bot.books().flatMap(book => book.cards().map((card) => (
-                <li key={`${card.rank()}-${card.suit()}`}>{card.rank()} of {card.suit()}</li>
-              )))}
-            </ul>
-          </li>
-        ))}
+        {bots.map(bot => {
+          const hand = bot.hand().map(card => `${card.rank()} of ${card.suit()}`).join(', ')
+          const books = bot.books().flatMap(book =>
+            book.cards().map(card => `${card.rank()} of ${card.suit()}`)
+          ).join(', ')
+  
+          return (
+            <li className="player-name" key={bot.name()}>
+              {bot.name()}
+              <br />
+              <span>Hand:</span>
+              <div className="player-hand">
+                {hand || 'No cards in hand'}
+              </div>
+              <span>Books:</span>
+              <div className="player-books">
+                {books || 'No books yet'}
+              </div>
+            </li>
+          )
+        })}
       </>
     )
   }
+  
 
   renderRoundResults() {
     return (
@@ -163,8 +173,14 @@ class GameView extends React.Component {
           {this.renderRoundResults()}
           {this.renderAskForm()}
         </div>
-        <div className="player-hand"></div>
-        <div className="player-books"></div>
+        <div className="player-hand">
+          <span>Your Hand</span>
+          {this.renderPlayerView()}
+        </div>
+        <div className="player-books">
+          <span>Your Books</span>
+          {this.renderBooks(this.props.game.players()[0])}
+        </div>
       </div>
     )
   }
