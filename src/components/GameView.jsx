@@ -218,7 +218,7 @@ class GameView extends React.Component {
 
   render() {
     return (
-      <div className="game-view">
+      <div className="game-view" data-testid="game-view">
         {this.renderGameBoard()}
         {this.renderGameFeed()}
         {this.renderPlayerHand()}
