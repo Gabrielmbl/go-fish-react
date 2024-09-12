@@ -26,7 +26,7 @@ class EndGameView extends React.Component {
 
     return (
       <>
-        <div className="text-center">
+        <div className="flex flex-col justify-center text-center transform-y-15 text-center">
           <span className="font-5x-large">Game Over</span>
           <div className="flex flex-col gap-md outlined-container">
             <div className="font-2x-large">
