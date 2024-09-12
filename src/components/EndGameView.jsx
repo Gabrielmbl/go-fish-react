@@ -9,7 +9,8 @@ class EndGameView extends React.Component {
   }
 
   static propTypes = {
-    navigateTo: PropTypes.func.isRequired
+    winners: PropTypes.array.isRequired, 
+    navigateTo: PropTypes.func.isRequired,
   }
 
   handleNavigateToGame() {
@@ -21,9 +22,23 @@ class EndGameView extends React.Component {
   }
 
   render() {
+    const { winners } = this.props
+
     return (
       <div>
-        <h1>End Game View Page</h1>
+        <h1>End Game View</h1>
+        {winners.length > 0 ? (
+          <div>
+            <h2>Winner{winners.length > 1 ? 's' : ''}:</h2>
+            <ul>
+              {winners.map((winner, index) => (
+                <li key={index}>{winner.name()}</li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <h2>No winners yet!</h2>
+        )}
         <button onClick={this.handleNavigateToLogin}>Back to Login View</button>
         <button onClick={this.handleNavigateToGame}>Back to Game View</button>
       </div>

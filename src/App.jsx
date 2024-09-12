@@ -3,7 +3,7 @@ import LoginView from './components/LoginView'
 import GameView from './components/GameView'
 import EndGameView from './components/EndGameView'
 import Game from './models/Game'
-import Player from './models/Player' // Import the Player model if it's not included already
+import Player from './models/Player'
 
 class App extends React.Component {
   constructor(props) {
@@ -56,7 +56,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { currentView, playerName, opponentCount, game, winners } = this.state
+    const { currentView, game, winners } = this.state
 
     let viewComponent
 

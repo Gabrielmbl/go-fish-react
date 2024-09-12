@@ -93,3 +93,12 @@ button:focus-visible {
   height: 100vh;
   overflow: auto;
 }
+
+.round-results {
+  height: 30vh;
+  overflow: auto;
+}
+
+.messages {
+  overflow: auto;
+}
