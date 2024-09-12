@@ -3,7 +3,7 @@ import LoginView from './components/LoginView'
 import GameView from './components/GameView'
 import EndGameView from './components/EndGameView'
 import Game from './models/Game'
-import Player from './models/Player'
+import Player from './models/Player' // Import the Player model if it's not included already
 
 class App extends React.Component {
   constructor(props) {
@@ -13,61 +13,86 @@ class App extends React.Component {
       playerName: '',
       opponentCount: 1,
       game: null,
+      winners: [],
     }
-    this.navigateTo = this.navigateTo.bind(this)
+
     this.handleSetPlayerInfo = this.handleSetPlayerInfo.bind(this)
-    this.initializeGame = this.initializeGame.bind(this)
+    this.playRound = this.playRound.bind(this)
+    this.endGame = this.endGame.bind(this)
+    this.navigateTo = this.navigateTo.bind(this)
+  }
+
+  handleSetPlayerInfo(playerName, opponentCount) {
+    const player = new Player(playerName)
+    const newGame = new Game(player, opponentCount)
+    newGame.deal()
+    this.setState({
+      game: newGame,
+      currentView: 'game',
+    })
+  }
+
+  playRound(opponent, rank) {
+    if (this.state.game) {
+      this.state.game.playRound(opponent, rank)
+      const winners = this.state.game.gameWinners()
+      if (winners.length > 0) {
+        this.endGame()
+      } else {
+        this.setState({ game: this.state.game })
+      }
+    }
+  }
+
+  endGame() {
+    this.setState({
+      winners: this.state.game.gameWinners(),
+      currentView: 'end-game',
+    })
   }
 
   navigateTo(view) {
     this.setState({ currentView: view })
   }
 
-  handleSetPlayerInfo(playerName, opponentCount) {
-    this.setState({
-      playerName,
-      opponentCount
-    }, () => {
-      this.initializeGame() 
-      this.navigateTo('game')
-    })
-  }
-
-  initializeGame() {
-    const { playerName, opponentCount } = this.state
-    const playerObject = new Player(playerName)
-    const newGame = new Game(playerObject, opponentCount)
-    this.setState({ game: newGame })
-  }
-
   render() {
-    const { currentView, playerName, opponentCount, game } = this.state
+    const { currentView, playerName, opponentCount, game, winners } = this.state
+
     let viewComponent
 
     switch (currentView) {
       case 'login':
         viewComponent = (
-          <LoginView 
+          <LoginView
             onSubmit={this.handleSetPlayerInfo}
-            navigateTo={this.navigateTo} 
+            navigateTo={this.navigateTo}
           />
         )
         break
       case 'game':
         viewComponent = (
-          <GameView 
-            navigateTo={this.navigateTo} 
-            playerName={playerName} 
-            opponentCount={opponentCount}
+          <GameView
             game={game}
+            playRound={this.playRound}
+            navigateTo={this.navigateTo}
           />
         )
         break
       case 'end-game':
-        viewComponent = <EndGameView navigateTo={this.navigateTo} />
+        viewComponent = (
+          <EndGameView
+            winners={winners}
+            navigateTo={this.navigateTo}
+          />
+        )
         break
       default:
-        viewComponent = <LoginView navigateTo={this.navigateTo} />
+        viewComponent = (
+          <LoginView
+            onSubmit={this.handleSetPlayerInfo}
+            navigateTo={this.navigateTo}
+          />
+        )
         break
     }
 
