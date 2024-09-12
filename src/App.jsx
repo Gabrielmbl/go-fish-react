@@ -77,7 +77,7 @@ class App extends React.Component {
         viewComponent = (
           <>
             {this.renderHeader()}
-            <div className="flex flex-col justify-center full-height">
+            <div className="flex flex-col justify-center full-height transform-y-15">
               <LoginView
                 onSubmit={this.handleSetPlayerInfo}
                 navigateTo={this.navigateTo}
@@ -110,10 +110,15 @@ class App extends React.Component {
         break
       default:
         viewComponent = (
-          <LoginView
-            onSubmit={this.handleSetPlayerInfo}
-            navigateTo={this.navigateTo}
-          />
+          <>
+            {this.renderHeader()}
+            <div className="flex flex-col justify-center full-height  transform-y-15">
+              <LoginView
+                onSubmit={this.handleSetPlayerInfo}
+                navigateTo={this.navigateTo}
+              />
+            </div>
+          </>
         )
         break
     }
