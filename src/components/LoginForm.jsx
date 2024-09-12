@@ -57,7 +57,7 @@ class LoginForm extends React.Component {
             ))}
           </select>
         </div>
-        <input className="btn" type="submit" value="Start Game" data-testid="start-game-button"/>
+        <input className="btn full-width" type="submit" value="Start Game" data-testid="start-game-button" />
       </form>
     )
   }

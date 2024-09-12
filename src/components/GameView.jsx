@@ -49,6 +49,18 @@ class GameView extends React.Component {
     this.props.navigateTo('login')
   }
 
+  players() {
+    return this.props.game.players()
+  }
+
+  playerHand(player) {
+    return player.hand()
+  }
+
+  playerBooks(player) {
+    return player.books()
+  }
+
   renderAskForm() {
     if (!this.props.game.isItHumanPlayerTurn()) return null
 
@@ -99,18 +111,6 @@ class GameView extends React.Component {
         </div>
       </div>
     )
-  }
-
-  players() {
-    return this.props.game.players()
-  }
-
-  playerHand(player) {
-    return player.hand()
-  }
-
-  playerBooks(player) {
-    return player.books()
   }
 
   renderCard(card) {
