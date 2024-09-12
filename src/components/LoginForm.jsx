@@ -32,7 +32,7 @@ class LoginForm extends React.Component {
   render() {
     const { playerName, opponentCount } = this.state
     return (
-      <form onSubmit={this.handleSubmit} className="login-container" data-testid="login-form">
+      <form onSubmit={this.handleSubmit} className="outlined-container" data-testid="login-form">
         <div className='form-group'>
           <label className="form-label" htmlFor="playerName">Your name</label>
           <input

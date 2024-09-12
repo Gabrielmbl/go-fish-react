@@ -101,18 +101,6 @@ class GameView extends React.Component {
     )
   }
 
-  renderHeader() {
-    return (
-      <div className="app__header">
-        <div className="navbar">
-          <nav className="navbar__content navbar__content--justify-start">
-            <span>Go Fish</span>
-          </nav>
-        </div>
-      </div>
-    )
-  }
-
   players() {
     return this.props.game.players()
   }

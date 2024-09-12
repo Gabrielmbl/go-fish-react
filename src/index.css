@@ -74,7 +74,7 @@ button:focus-visible {
   height: 100%;
 }
 
-.login-container {
+.outlined-container {
   padding: 50px;
   border-radius: var(--op-radius-medium);
   box-shadow: var(--op-border-all) var(--op-color-border);
@@ -82,4 +82,16 @@ button:focus-visible {
 
 .scrollable {
   overflow: auto;
+}
+
+.font-5x-large {
+  font-size: var(--op-font-5x-large);
+}
+
+.font-2x-large {
+  font-size: var(--op-font-2x-large);
+}
+
+.align-center {
+  align-items: center;
 }

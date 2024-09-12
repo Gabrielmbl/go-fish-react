@@ -55,6 +55,18 @@ class App extends React.Component {
     this.setState({ currentView: view })
   }
 
+  renderHeader() {
+    return (
+      <div className="app__header">
+        <div className="navbar">
+          <nav className="navbar__content navbar__content--justify-start">
+            <span>Go Fish</span>
+          </nav>
+        </div>
+      </div>
+    )
+  }
+
   render() {
     const { currentView, game, winners } = this.state
 
@@ -63,10 +75,15 @@ class App extends React.Component {
     switch (currentView) {
       case 'login':
         viewComponent = (
-          <LoginView
-            onSubmit={this.handleSetPlayerInfo}
-            navigateTo={this.navigateTo}
-          />
+          <>
+            {this.renderHeader()}
+            <div className="flex flex-col justify-center full-height">
+              <LoginView
+                onSubmit={this.handleSetPlayerInfo}
+                navigateTo={this.navigateTo}
+              />
+            </div>
+          </>
         )
         break
       case 'game':
@@ -80,10 +97,15 @@ class App extends React.Component {
         break
       case 'end-game':
         viewComponent = (
-          <EndGameView
-            winners={winners}
-            navigateTo={this.navigateTo}
-          />
+          <>
+            {this.renderHeader()}
+            <div className="flex justify-center full-height">
+              <EndGameView
+                winners={winners}
+                navigateTo={this.navigateTo}
+              />
+            </div>
+          </>
         )
         break
       default:
@@ -97,9 +119,9 @@ class App extends React.Component {
     }
 
     return (
-      <div>
+      <>
         {viewComponent}
-      </div>
+      </>
     )
   }
 }
