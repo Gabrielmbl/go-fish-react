@@ -1,0 +1,43 @@
+@import '@rolemodel/optics/dist/scss/optics';
+@import '@rolemodel/optics/dist/scss/addons/panel';
+// This is a manifest file that'll be compiled into application.css, which will include
+// all the files listed below.
+//
+// For example:
+// @import 'components/modal';
+
+@import "components/flash";
+@import "config/animations";
+
+
+// Theme Customization
+@import 'core/theme/go-fish-theme-core';
+@import 'core/theme/gabriel-dark-theme-core';
+@import 'core/theme/jullian-light-theme-core';
+@import 'core/theme/dominic-dark-theme-core';
+
+// Core Customization
+@import 'core/layout';
+@import 'core/utilities';
+
+// components
+@import '@rolemodel/optics/dist/scss/components/sidebar';
+@import 'components/go-fish-panel';
+@import 'components/accordion';
+@import 'components/notifications';
+@import 'components/actions';
+@import 'components/card-tray';
+@import 'components/optics_overrides/navbar';
+@import 'components/optics_overrides/app__content';
+@import 'components/optics_overrides/pagination';
+@import 'components/rank_selector';
+@import 'components/sidebar';
+@import 'components/games-list';
+@import 'components/navbar';
+@import 'components/go-fish-logo';
+@import 'components/stats';
+@import 'components/history';
+@import 'components/ransack-filter';
+@import 'components/sortable-table';
+@import 'components/status';
+@import 'components/login';

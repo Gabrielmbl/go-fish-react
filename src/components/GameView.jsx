@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Bot from '../models/Bot'
+// import Bot from '../models/Bot'
 
 class GameView extends React.Component {
   static propTypes = {
@@ -45,6 +45,10 @@ class GameView extends React.Component {
     this.props.playRound(selectedOpponent, selectedRank)
   }
 
+  handleNavigateToLogin() {
+    this.props.navigateTo('login')
+  }
+
   renderAskForm() {
     if (!this.props.game.isItHumanPlayerTurn()) return null
 
@@ -53,96 +57,46 @@ class GameView extends React.Component {
     const opponents = players.filter(player => player !== this.props.game.players()[0])
 
     return (
-      <form className="ask-form" onSubmit={this.handleSubmit}>
-        <label htmlFor="rank">Ask for rank:</label>
-        <select id="rank" value={this.state.selectedRank} onChange={this.handleRankChange} data-testid="ask-rank">
-          {uniqueRanks.map((rank, index) => (
-            <option key={index} value={rank}>{rank}</option>
-          ))}
-        </select>
-        <label htmlFor="opponent">Opponent:</label>
-        <select id="opponent" value={this.state.selectedOpponent} onChange={this.handleOpponentChange} data-testid="ask-opponent">
-          {opponents.map((player, index) => (
-            <option key={index} value={player.name()}>{player.name()}</option>
-          ))}
-        </select>
-        <button className="btn" type="submit" data-testid="ask-button">Ask</button>
+      <form className="edit_game" onSubmit={this.handleSubmit}>
+        <div className="actions">
+          <div className="actions__input-collection">
+            <div className="form-group">
+              <label className="form-label" htmlFor="opponent">Opponent:</label>
+              <select className="form-control form-control--small" id="opponent" value={this.state.selectedOpponent} onChange={this.handleOpponentChange} data-testid="ask-opponent">
+                {opponents.map((player, index) => (
+                  <option key={index} value={player.name()}>{player.name()}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="rank">Ask for rank:</label>
+              <select className="form-control form-control--small" id="rank" value={this.state.selectedRank} onChange={this.handleRankChange} data-testid="ask-rank">
+                {uniqueRanks.map((rank, index) => (
+                  <option key={index} value={rank}>{rank}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <button className="btn-primary" type="submit" data-testid="ask-button">Ask</button>
+        </div>
       </form>
     )
   }
 
-  renderBooks(player) {
-    const books = player.books().flatMap((book) =>
-      book.cards().map(card => `${card.rank()} of ${card.suit()}`)
-    ).join(', ')
-    return (
-      <div className="player-books">
-        {books || 'No books yet'}
-      </div>
-    )
-  }
-
-  renderPlayerView() {
-    const player = this.props.game.players().find(player => !(player instanceof Bot))
-    if (!player) return null
-  
-    const hand = player.hand().map(card => `${card.rank()} of ${card.suit()}`).join(', ')
-  
-    return (
-      <li className="player-name">
-        {player.name()}
-        <br />
-        <span>Hand:</span>
-        <div className="player-hand">
-          {hand || 'No cards in hand'}
-        </div>
-        {this.renderBooks(player)}
-      </li>
-    )
-  }
-  
-
-  renderBotView() {
-    // const bots = this.props.game.players().filter(player => player instanceof Bot)
-    const bots = this.props.game.players().slice(1)
-  
+  renderRoundResults() {
     return (
       <>
-        {bots.map(bot => {
-          const hand = bot.hand().map(card => `${card.rank()} of ${card.suit()}`).join(', ')
-          const books = bot.books().flatMap(book =>
-            book.cards().map(card => `${card.rank()} of ${card.suit()}`)
-          ).join(', ')
-  
-          return (
-            <li className="player-name" key={bot.name()}>
-              {bot.name()}
-              <br />
-              <span>Hand:</span>
-              <div className="player-hand">
-                {hand || 'No cards in hand'}
-              </div>
-              <span>Books:</span>
-              <div className="player-books">
-                {books || 'No books yet'}
-              </div>
-            </li>
-          )
-        })}
+        {this.props.game.roundResults().reverse().map((result) => this.renderMessage(result))}
       </>
     )
   }
-  
 
-  renderRoundResults() {
+  renderMessage(result) {
     return (
-      <div className="round-results">
-        <h2>Round Results</h2>
-        <ul>
-          {this.props.game.roundResults().map((result, index) => (
-            <li key={index}>{result.displayResult()}</li>
-          ))}
-        </ul>
+      <div className="notifications__round_result">
+        <div className="message game_feedback">
+          {result.displayResult()}
+        </div>
       </div>
     )
   }
@@ -159,28 +113,128 @@ class GameView extends React.Component {
     )
   }
 
+  players() {
+    return this.props.game.players()
+  }
+
+  playerHand(player) {
+    return player.hand()
+  }
+
+  playerBooks(player) {
+    return player.books()
+  }
+
+  renderCard(card) {
+    const rank = card.rank().toLowerCase()
+    const suit = card.suit().toLowerCase()
+    const src = `/assets/images/cards/${rank}-${suit}.svg`
+    const alt = "Playing Card"
+
+    return <img key={`${rank}-${suit}`} src={src} alt={alt} />
+  }
+
+  renderBook(book) {
+    return (
+      <>{book.cards().map(card => this.renderCard(card))}</>
+    )
+  }
+
+  renderPlayerAccordion(player) {
+    return (
+      <details className="accordion">
+        <summary>
+          <span className="material-symbols-outlined icon--outlined icon--medium icon--weight-normal icon--normal-emphasis">arrow_right</span>
+          <span>{player.name()}</span>
+          <div className="flex gap-lg">
+            <span>Cards: <span className="fw-semibold">{player.hand().length}</span></span>
+            <span>Books: <span className="fw-semibold">{player.books().length}</span></span>
+          </div>
+        </summary>
+        <div className="card-tray">
+          <div className="card-stack card-stack--accordion-hand">
+            {this.playerHand(player).map(card => (this.renderCard(card)))}
+          </div>
+          <div className="card-stack card-stack--accordion-books">
+            {this.playerBooks(player).map(book => (this.renderBook(book)))}
+          </div>
+        </div>
+      </details>
+    )
+  }
+
+  renderHand(player) {
+    return (
+      <div className="card-tray">
+        <div className="card-stack card-stack--player-hand">
+          {this.playerHand(player).map(card => (this.renderCard(card)))}
+        </div>
+      </div>
+    )
+  }
+
+  renderPlayerBooks() {
+    return <div className="go-fish-panel go-fish-panel--player-books go-fish-panel--bottom-row">
+      <div className="go-fish-panel__header go-fish-panel__header-title">
+        <span>Your Books</span>
+      </div>
+      <div className="card-tray">
+        <div className="card-stack card-stack--player-books">
+          {this.playerBooks(this.players()[0]).map(book => (this.renderBook(book)))}
+        </div>
+      </div>
+    </div>
+  }
+
+  renderPlayerHand() {
+    return <div className="go-fish-panel go-fish-panel--player-hand go-fish-panel--bottom-row">
+      <div className="go-fish-panel__header go-fish-panel__header-title">
+        <span>Your Hand</span>
+      </div>
+      {this.renderHand(this.players()[0])}
+    </div>
+  }
+
+  renderGameFeed() {
+    return <div className="go-fish-panel go-fish-panel--game-feed">
+      <div className="go-fish-panel__header go-fish-panel__header--game-feed">
+        <span>Game Feed</span>
+        <button className="btn btn-primary btn--small">SpareButton</button>
+      </div>
+      <div className="go-fish-panel__body go-fish-panel__body--game-feed">
+        <div className="notifications">
+          {this.renderRoundResults()}
+        </div>
+        {this.renderAskForm()}
+      </div>
+    </div>
+  }
+
+  renderGameBoard() {
+    return <div className="go-fish-panel go-fish-panel--game-board">
+      <div className="go-fish-panel__header go-fish-panel__header--game-board">
+        <a className="btn btn--pill btn--icon btn--no-border btn--small back-arrow" href="" onClick={this.handleNavigateToLogin}>&nbsp;←</a>
+        <span>Game Board</span>
+      </div>
+      <div className="go-fish-panel__body go-fish-panel__body--game-board">
+        <div className='players-decks__header'>
+          <span>Players</span>
+        </div>
+        <div className="divider divider--medium"></div>
+        <div className="players-hands">
+          {this.players().map(player => this.renderPlayerAccordion(player))}
+        </div>
+      </div>
+    </div>
+  }
+
   render() {
     return (
       <div className="game-view">
-        <div className="game-board">
-          <h2>Players</h2>
-          <ul>
-            {this.renderPlayerView()}
-            {this.renderBotView()}
-          </ul>
-        </div>
-        <div className="game-feed">
-          {this.renderRoundResults()}
-          {this.renderAskForm()}
-        </div>
-        <div className="player-hand">
-          <span>Your Hand</span>
-          {this.renderPlayerView()}
-        </div>
-        <div className="player-books">
-          <span>Your Books</span>
-          {this.renderBooks(this.props.game.players()[0])}
-        </div>
+        {this.renderGameBoard()}
+        {this.renderGameFeed()}
+        {this.renderPlayerHand()}
+        {this.renderPlayerBooks()}
       </div>
     )
   }

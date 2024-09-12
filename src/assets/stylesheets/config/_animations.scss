@@ -1,0 +1,29 @@
+@keyframes appear-then-fade {
+
+  0%,
+  100% {
+    opacity: 0
+  }
+
+  5%,
+  60% {
+    opacity: 1
+  }
+}
+
+@view-transition {
+  navigation: auto;
+}
+
+.animate {
+  height: 100%;
+  opacity: var(--op-opacity-full);
+
+  transition-property: opacity, height;
+  transition-duration: 1s;
+
+  @starting-style {
+    height: 0;
+    opacity: var(--op-opacity-none);
+  }
+}
