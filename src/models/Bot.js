@@ -16,7 +16,7 @@ class Bot extends Player {
   }
 
   chooseRandomOpponent(players) {
-    const opponents = players.filter(player => player !== this)
+    const opponents = players.filter(player => player !== this && !(player.handEmpty()))
     const randomIndex = Math.floor(Math.random() * opponents.length)
     return opponents[randomIndex]
   }
@@ -52,7 +52,7 @@ class Bot extends Player {
   chooseRankAndOpponentFromMemory(players, difficulty) {
     if (difficulty === 'medium') this.shortenMemory()
     const myRanks = this.hand().map(card => card.rank())
-    const opponent = players.find(opponent => opponent !== this && (this.memory()[opponent.name()] || []).some(rank => myRanks.includes(rank)))
+    const opponent = players.find(opponent => opponent !== this && !(opponent.handEmpty()) && (this.memory()[opponent.name()] || []).some(rank => myRanks.includes(rank)))
     const rank = opponent ? this.memory()[opponent.name()].find(rank => myRanks.includes(rank)) : this.chooseRandomRank()
     return { rank, opponent: opponent || this.chooseRandomOpponent(players) }
   }
