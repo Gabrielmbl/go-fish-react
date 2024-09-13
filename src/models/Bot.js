@@ -18,6 +18,7 @@ class Bot extends Player {
   chooseRandomOpponent(players) {
     const opponents = players.filter(player => player !== this && !(player.handEmpty()))
     const randomIndex = Math.floor(Math.random() * opponents.length)
+    console.log(`opponents[randomIndex]: ${opponents[randomIndex]}`)
     return opponents[randomIndex]
   }
 

@@ -23,7 +23,7 @@ class LoginView extends React.Component {
     const { game } = this.props
 
     if (game) {
-      return <Navigate to='game'></Navigate>
+      return <Navigate to='/game' />
     }
 
     return (

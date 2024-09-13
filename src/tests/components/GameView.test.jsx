@@ -25,10 +25,10 @@ const mockGame = {
   players: () => [mockHumanPlayer, mockBotPlayer],
   roundResults: () => [{ displayResult: () => 'Player 1 asked Bot 1 for 9' }],
   isItHumanPlayerTurn: () => true,
+  gameWinners: () => [],
 }
 
 const mockPlayRound = vi.fn()
-const mockNavigateTo = vi.fn()
 
 describe('GameView', () => {
 
@@ -37,7 +37,7 @@ describe('GameView', () => {
   })
 
   it('renders players and their hands', () => {
-    render(<GameView game={mockGame} playRound={mockPlayRound} navigateTo={mockNavigateTo} />)
+    render(<GameView game={mockGame} playRound={mockPlayRound} />)
 
     const player1 = screen.queryAllByText(/Player 1/i)
     const player2 = screen.queryAllByText(/Bot 1/i)

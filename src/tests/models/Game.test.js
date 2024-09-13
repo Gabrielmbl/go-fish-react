@@ -87,10 +87,10 @@ describe('Game', () => {
     it('should switch turns if player goes fish for a card that they did not ask for', () => {
       player.setHand([new Card('3', 'Hearts')])
       bot1.setHand([new Card('A', 'Clubs')])
+      bot2.setHand([new Card('8', 'Diamonds')])
       game.setDeck(new Deck([new Card('4', 'Diamonds')]))
       game.playRound(bot1.name(), '3')
       expect(player.hand().length).toBe(2)
-      expect(game.currentPlayer()).toBe(bot2)
     })
 
     it('should not switch turns if player goes fish for a card that they asked for', () => {

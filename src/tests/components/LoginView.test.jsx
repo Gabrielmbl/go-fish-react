@@ -4,11 +4,10 @@ import userEvent from '@testing-library/user-event'
 import LoginView from '../../components/LoginView'
 
 describe('LoginView', () => {
-  const mockNavigateTo = vi.fn()
   const mockOnSubmit = vi.fn()
 
   beforeEach(() => {
-    render(<LoginView navigateTo={mockNavigateTo} onSubmit={mockOnSubmit} />)
+    render(<LoginView onSubmit={mockOnSubmit} />)
   })
 
   afterEach(() => {
@@ -37,14 +36,15 @@ describe('LoginView', () => {
   it('submits form and calls onSubmit with correct data', async () => {
     const playerNameInput = screen.getByLabelText(/Your name/i)
     const opponentCountSelect = screen.getByLabelText(/Number of Opponents/i)
+    const difficultySelect = screen.getByLabelText(/Difficulty/i)
     const submitButton = screen.getByRole('button', { name: /Start Game/i })
 
     await userEvent.type(playerNameInput, 'Gabriel')
     await userEvent.selectOptions(opponentCountSelect, '3')
+    await userEvent.selectOptions(difficultySelect, 'medium')
     await userEvent.click(submitButton)
 
-    expect(mockOnSubmit).toHaveBeenCalledWith('Gabriel', 3)
-    expect(mockNavigateTo).toHaveBeenCalledWith('game')
+    expect(mockOnSubmit).toHaveBeenCalledWith('Gabriel', 3, 'medium')
   })
 
   it('prevents form submission with invalid data', async () => {
@@ -55,6 +55,5 @@ describe('LoginView', () => {
     await userEvent.click(submitButton)
 
     expect(mockOnSubmit).not.toHaveBeenCalled()
-    expect(mockNavigateTo).not.toHaveBeenCalled()
   })
 })

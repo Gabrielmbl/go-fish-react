@@ -12,7 +12,9 @@ describe('RoundResult', () => {
       rankAsked: '3',
       cardFished: new Card('3', 'Hearts'),
       booksMade: ['3'],
-      gameWinners: ['Gabriel']
+      gameWinners: ['Gabriel'],
+      deckEmpty: false,
+      playerFished: true
     })
   })
 
@@ -31,7 +33,9 @@ describe('RoundResult', () => {
         rankAsked: '3',
         cardFished: new Card('3', 'Hearts'),
         booksMade: [],
-        gameWinners: []
+        gameWinners: [],
+        deckEmpty: false,
+        playerFished: true
       })
       const result = roundResult.displayResult()
       expect(result).toContain('Gabriel asked Lucas for 3s')
@@ -67,7 +71,9 @@ describe('RoundResult', () => {
         rankAsked: '3',
         cardFished: new Card('3', 'Hearts'),
         booksMade: [],
-        gameWinners: ['Gabriel']
+        gameWinners: ['Gabriel'],
+        deckEmpty: false,
+        playerFished: true
       })
       const result = roundResult.displayResult()
       expect(result).toContain('Gabriel asked Lucas for 3s')

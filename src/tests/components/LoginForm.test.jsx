@@ -18,13 +18,15 @@ describe('LoginForm', () => {
   it('calls onSubmit with playerName and opponentCount when the form is submitted', async () => {
     const playerNameInput = screen.getByLabelText(/Your name/i)
     const opponentCountSelect = screen.getByLabelText(/Number of Opponents/i)
+    const difficultySelect = screen.getByLabelText(/Difficulty/i)
     const submitButton = screen.getByRole('button', { name: /Start Game/i })
 
     await userEvent.type(playerNameInput, 'Gabriel')
     await userEvent.selectOptions(opponentCountSelect, '3')
+    await userEvent.selectOptions(difficultySelect, 'medium')
 
     await userEvent.click(submitButton)
 
-    expect(mockOnSubmit).toHaveBeenCalledWith('Gabriel', 3)
+    expect(mockOnSubmit).toHaveBeenCalledWith('Gabriel', 3, 'medium')
   })
 })

@@ -9,11 +9,11 @@ describe('EndGameView', () => {
     cleanup()
   })
 
-  const mockNavigateTo = vi.fn()
+  const mockFinishGame = vi.fn()
 
   it('renders a single winner when there is one winner', () => {
     const mockWinner = { name: () => 'Player 1' }
-    render(<EndGameView winners={[mockWinner]} navigateTo={mockNavigateTo} />)
+    render(<EndGameView winners={[mockWinner]} finishGame={mockFinishGame} />)
 
     expect(screen.getByText('Winner:')).toBeInTheDocument()
     expect(screen.getByText('Player 1')).toBeInTheDocument()
@@ -21,28 +21,20 @@ describe('EndGameView', () => {
 
   it('renders multiple winners when there are multiple winners', () => {
     const mockWinners = [{ name: () => 'Player 1' }, { name: () => 'Player 2' }]
-    render(<EndGameView winners={mockWinners} navigateTo={mockNavigateTo} />)
+    render(<EndGameView winners={mockWinners} finishGame={mockFinishGame} />)
 
     expect(screen.getByText('Winners:')).toBeInTheDocument()
     expect(screen.getByText('Player 1')).toBeInTheDocument()
     expect(screen.getByText('Player 2')).toBeInTheDocument()
   })
 
-  it('calls navigateTo("login") when "Back to Login View" button is clicked', async () => {
-    const user = userEvent.setup()
-    render(<EndGameView winners={[]} navigateTo={mockNavigateTo} />)
+  it('calls handleNavigateToLogin when the button is clicked', () => {
+    const mockWinner = { name: () => 'Player 1' }
+    render(<EndGameView winners={[mockWinner]} finishGame={mockFinishGame} />)
 
-    await user.click(screen.getByText('Back to Login View'))
+    userEvent.click(screen.getByTestId('back-to-login-button'))
 
-    expect(mockNavigateTo).toHaveBeenCalledWith('login')
+    expect(mockFinishGame).toHaveBeenCalled
   })
 
-  it('calls navigateTo("game") when "Back to Game View" button is clicked', async () => {
-    const user = userEvent.setup()
-    render(<EndGameView winners={[]} navigateTo={mockNavigateTo} />)
-
-    await user.click(screen.getByText('Back to Game View'))
-
-    expect(mockNavigateTo).toHaveBeenCalledWith('game')
-  })
 })

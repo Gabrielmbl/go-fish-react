@@ -5,7 +5,6 @@ class EndGameView extends React.Component {
   constructor(props) {
     super(props)
     this.handleNavigateToLogin = this.handleNavigateToLogin.bind(this)
-
   }
 
   static propTypes = {
@@ -38,7 +37,7 @@ class EndGameView extends React.Component {
               )}
             </div>
             <div className="flex gap-md">
-              <button className="btn btn-secondary" onClick={this.handleNavigateToLogin}>Back to Login View</button>
+              <button className="btn btn-secondary" data-testid="back-to-login-button" onClick={this.handleNavigateToLogin}>Back to Login View</button>
             </div>
           </div>
         </div>
