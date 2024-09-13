@@ -31,6 +31,18 @@ class GameView extends React.Component {
     })
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props !== prevProps) {
+      const players = this.props.game.players() || []
+      const uniqueRanks = [...new Set(players[0].hand().map(card => card.rank()))]
+
+      this.setState({
+        selectedRank: uniqueRanks[0] || '',
+        selectedOpponent: players.length > 1 ? players[1].name() : ''
+      })
+    }
+  }
+
   handleRankChange(event) {
     this.setState({ selectedRank: event.target.value })
   }
@@ -63,7 +75,7 @@ class GameView extends React.Component {
 
   renderAskForm() {
     if (!this.props.game.isItHumanPlayerTurn()) return null
-    
+
     const uniqueRanks = [...new Set(this.props.game.players()[0].hand().map(card => card.rank()))]
     const players = this.props.game.players() || []
     const opponents = players.filter(player => player !== this.props.game.players()[0] && player.hand().length > 0)
