@@ -74,22 +74,22 @@ class Game {
   }
 
   playRound(opponentName, rank) {
-    if (!(this.currentPlayerHasCards())) return
-
-    var { opponent, cardFished } = this.setVariablesForPlayRound(opponentName)
+    var { opponent, cardFished, playerFished } = this.setVariablesForPlayRound(opponentName)
     if (opponent.handHasRanks(rank)) {
       this.moveCardsFromOpponentToCurrentPlayer(opponent, rank)
     } else {
+      playerFished = true
       cardFished = this.handleGoFish(rank)
     }
-    this.finalizeTurn(opponentName, rank, cardFished)
+    this.finalizeTurn(opponentName, rank, cardFished, playerFished)
   }
 
   setVariablesForPlayRound(opponentName) {
     this._roundPlayer = this.currentPlayer()
     let cardFished = null
+    let playerFished = false
     const opponent = this.setOpponent(opponentName)
-    return { opponent, cardFished }
+    return { opponent, cardFished, playerFished }
   }
 
   currentPlayerHasCards() {
@@ -100,16 +100,24 @@ class Game {
     return true
   }
   
-  finalizeTurn(opponentName, rank, cardFished) {
+  finalizeTurn(opponentName, rank, cardFished, playerFished) {
     const booksMade = this.roundPlayer().checkForBooks()
     this.checkForWinner()
     this.checkEmptyHandOrDraw()
-    this.createRoundResult(opponentName, rank, cardFished, booksMade)
+    this.createRoundResult(opponentName, rank, cardFished, booksMade, playerFished)
+    if (this.gameWinners().length > 0 ) return
+    this.skipTurn()
     while (!this.isItHumanPlayerTurn() && this.currentPlayer().hand().length > 0) this.botTakeTurn()
   }
 
-  createRoundResult(opponentName, rank, cardFished, booksMade) {
-    const roundResult = new RoundResult({playerName: this.roundPlayer().name(), opponentName: opponentName, rankAsked: rank, cardFished: cardFished, booksMade: booksMade, gameWinners: this.gameWinners()})
+  skipTurn() {
+    while (this.currentPlayer().handEmpty()) {
+      this.switchPlayers()
+    }
+  }
+
+  createRoundResult(opponentName, rank, cardFished, booksMade, playerFished) {
+    const roundResult = new RoundResult({playerName: this.roundPlayer().name(), opponentName: opponentName, rankAsked: rank, cardFished: cardFished, booksMade: booksMade, gameWinners: this.gameWinners(), deckEmpty: this.deck().deckEmpty(), playerFished: playerFished})
     this.roundResults().push(roundResult)
   }
 

@@ -63,10 +63,10 @@ class GameView extends React.Component {
 
   renderAskForm() {
     if (!this.props.game.isItHumanPlayerTurn()) return null
-
+    
     const uniqueRanks = [...new Set(this.props.game.players()[0].hand().map(card => card.rank()))]
     const players = this.props.game.players() || []
-    const opponents = players.filter(player => player !== this.props.game.players()[0])
+    const opponents = players.filter(player => player !== this.props.game.players()[0] && player.hand().length > 0)
 
     return (
       <form className="edit_game" onSubmit={this.handleSubmit}>
@@ -121,7 +121,7 @@ class GameView extends React.Component {
 
     return <img key={`${rank}-${suit}`} src={src} alt={alt} />
   }
-
+  // TODO: Just render first card of a book
   renderBook(book) {
     return (
       <>{book.cards().map(card => this.renderCard(card))}</>
