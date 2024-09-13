@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import LoginForm from './LoginForm'
+import { Navigate } from 'react-router-dom'
 
 class LoginView extends React.Component {
   constructor(props) {
@@ -9,17 +10,22 @@ class LoginView extends React.Component {
   }
   
   static propTypes = {
-    navigateTo: PropTypes.func.isRequired,
+    game: PropTypes.object,
     onSubmit: PropTypes.func.isRequired,
   }
 
   handleFormSubmit(playerName, opponentCount, difficulty) {
     if (playerName === '' || opponentCount < 1 || opponentCount > 8) return
     this.props.onSubmit(playerName, opponentCount, difficulty)
-    this.props.navigateTo('game')
   }
 
   render() {
+    const { game } = this.props
+
+    if (game) {
+      return <Navigate to='game'></Navigate>
+    }
+
     return (
       <div className="flex justify-center">
         <LoginForm onSubmit={this.handleFormSubmit} />

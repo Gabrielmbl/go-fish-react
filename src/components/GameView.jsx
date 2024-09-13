@@ -1,11 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 // import Bot from '../models/Bot'
+import { Navigate } from 'react-router-dom'
 
 class GameView extends React.Component {
   static propTypes = {
-    navigateTo: PropTypes.func.isRequired,
-    game: PropTypes.object.isRequired,
+    game: PropTypes.object,
     playRound: PropTypes.func.isRequired,
   }
 
@@ -55,10 +55,6 @@ class GameView extends React.Component {
     event.preventDefault()
     const { selectedRank, selectedOpponent } = this.state
     this.props.playRound(selectedOpponent, selectedRank)
-  }
-
-  handleNavigateToLogin() {
-    this.props.navigateTo('login')
   }
 
   players() {
@@ -133,10 +129,10 @@ class GameView extends React.Component {
 
     return <img key={`${rank}-${suit}`} src={src} alt={alt} />
   }
-  // TODO: Just render first card of a book
+
   renderBook(book) {
     return (
-      <>{book.cards().map(card => this.renderCard(card))}</>
+      <>{this.renderCard(book.cards()[0])}</>
     )
   }
 
@@ -229,6 +225,10 @@ class GameView extends React.Component {
   }
 
   render() {
+    if (this.props.game.gameWinners().length > 0 ) {
+      return <Navigate to="/end-game"></Navigate>
+    }
+
     return (
       <div className="game-view" data-testid="game-view">
         {this.renderGameBoard()}

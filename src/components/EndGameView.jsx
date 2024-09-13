@@ -4,21 +4,17 @@ import PropTypes from 'prop-types'
 class EndGameView extends React.Component {
   constructor(props) {
     super(props)
-    this.handleNavigateToGame = this.handleNavigateToGame.bind(this)
     this.handleNavigateToLogin = this.handleNavigateToLogin.bind(this)
+
   }
 
   static propTypes = {
     winners: PropTypes.array.isRequired,
-    navigateTo: PropTypes.func.isRequired,
-  }
-
-  handleNavigateToGame() {
-    this.props.navigateTo('game')
+    finishGame: PropTypes.func.isRequired,
   }
 
   handleNavigateToLogin() {
-    this.props.navigateTo('login')
+    this.props.finishGame()
   }
 
   render() {
@@ -43,7 +39,6 @@ class EndGameView extends React.Component {
             </div>
             <div className="flex gap-md">
               <button className="btn btn-secondary" onClick={this.handleNavigateToLogin}>Back to Login View</button>
-              <button className="btn btn-secondary" onClick={this.handleNavigateToGame}>Back to Game View</button>
             </div>
           </div>
         </div>

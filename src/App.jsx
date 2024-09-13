@@ -1,4 +1,5 @@
 import React from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import LoginView from './components/LoginView'
 import GameView from './components/GameView'
 import EndGameView from './components/EndGameView'
@@ -9,7 +10,6 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentView: 'login',
       playerName: '',
       opponentCount: 1,
       game: null,
@@ -19,7 +19,7 @@ class App extends React.Component {
     this.handleSetGameInfo = this.handleSetGameInfo.bind(this)
     this.playRound = this.playRound.bind(this)
     this.endGame = this.endGame.bind(this)
-    this.navigateTo = this.navigateTo.bind(this)
+    this.finishGame = this.finishGame.bind(this)
   }
 
   handleSetGameInfo(playerName, opponentCount, difficulty) {
@@ -28,7 +28,6 @@ class App extends React.Component {
     newGame.deal()
     this.setState({
       game: newGame,
-      currentView: 'game',
     })
   }
 
@@ -47,12 +46,7 @@ class App extends React.Component {
   endGame() {
     this.setState({
       winners: this.state.game.gameWinners(),
-      currentView: 'end-game',
     })
-  }
-
-  navigateTo(view) {
-    this.setState({ currentView: view })
   }
 
   renderHeader() {
@@ -67,66 +61,42 @@ class App extends React.Component {
     )
   }
 
+  finishGame() {
+    this.setState({game: null})
+  }
+
   render() {
-    const { currentView, game, winners } = this.state
-
-    let viewComponent
-
-    switch (currentView) {
-      case 'login':
-        viewComponent = (
-          <>
-            {this.renderHeader()}
-            <div className="flex flex-col justify-center full-height transform-y-15">
-              <LoginView
-                onSubmit={this.handleSetGameInfo}
-                navigateTo={this.navigateTo}
-              />
-            </div>
-          </>
-        )
-        break
-      case 'game':
-        viewComponent = (
-          <GameView
-            game={game}
-            playRound={this.playRound}
-            navigateTo={this.navigateTo}
-          />
-        )
-        break
-      case 'end-game':
-        viewComponent = (
-          <>
-            {this.renderHeader()}
-            <div className="flex justify-center full-height">
-              <EndGameView
-                winners={winners}
-                navigateTo={this.navigateTo}
-              />
-            </div>
-          </>
-        )
-        break
-      default:
-        viewComponent = (
-          <>
-            {this.renderHeader()}
-            <div className="flex flex-col justify-center full-height  transform-y-15">
-              <LoginView
-                onSubmit={this.handleSetGameInfo}
-                navigateTo={this.navigateTo}
-              />
-            </div>
-          </>
-        )
-        break
-    }
+    const { game, winners } = this.state
 
     return (
-      <>
-        {viewComponent}
-      </>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div className="flex flex-col justify-center full-height transform-y-15">
+              <LoginView onSubmit={this.handleSetGameInfo} game={game}/>
+            </div>
+          }
+        />
+        <Route
+          path="/game"
+          element={
+            <GameView game={game} playRound={this.playRound} />
+          }
+        />
+        <Route
+          path="/end-game"
+          element={
+            game ? (
+              <div className="flex justify-center full-height">
+                <EndGameView winners={winners} finishGame={this.finishGame} />
+              </div>
+            ) : (
+              <Navigate to="/" />
+            )
+          }
+        />
+      </Routes>
     )
   }
 }
