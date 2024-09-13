@@ -20,44 +20,46 @@ class Bot extends Player {
     const randomIndex = Math.floor(Math.random() * opponents.length)
     return opponents[randomIndex]
   }
-  // TODO: When is bot's turn, 
-  // Who asked for what more recently?, which cards do i have, who has asked for those and when
+
   updateMemory(roundResult) {
+    const { roundPlayer, opponentName, rank, booksMadeArrayIntegers } = this.setVariablesForMemory(roundResult)
+    this.createMemory(roundPlayer, opponentName)
+
+    this.memory()[roundPlayer].push(rank)
+
+    if (roundResult.cardFished() === null) this.memory()[opponentName] = this.memory()[opponentName].filter(memoryRank => memoryRank !== rank)
+
+    if (this.memory()[roundPlayer].some(memoryRank => booksMadeArrayIntegers.includes(memoryRank))) this.memory()[roundPlayer] = this.memory()[roundPlayer].filter(memoryRank => !booksMadeArrayIntegers.includes(memoryRank))
+  }
+
+  setVariablesForMemory(roundResult) {
     const roundPlayer = roundResult.playerName()
     const opponentName = roundResult.opponentName()
-    const rank = parseInt(roundResult.rankAsked())
-    const booksMadeArrayIntegers = roundResult.booksMade().map(rank => parseInt(rank))
+    const rank = roundResult.rankAsked()
+    const booksMadeArrayIntegers = roundResult.booksMade().map(rank => rank)
+    return { roundPlayer, opponentName, rank, booksMadeArrayIntegers }
+  }
 
-    // Create key for player and opponent if not present
+  createMemory(roundPlayer, opponentName) {
     if (!this.memory()[roundPlayer]) {
       this.memory()[roundPlayer] = []
     }
     if (!this.memory()[opponentName]) {
       this.memory()[opponentName] = []
     }
+  }
 
-    // Taking ranks from opponent
-    if (roundResult.cardFished == null) {
-      this.memory()[roundPlayer].push(rank)
-      this.memory()[opponentName] = this.memory()[opponentName].filter(memoryRank => memoryRank !== rank)
-    }
+  chooseRankAndOpponentFromMemory(players, difficulty) {
+    if (difficulty === 'medium') this.shortenMemory()
+    const myRanks = this.hand().map(card => card.rank())
+    const opponent = players.find(opponent => opponent !== this && (this.memory()[opponent.name()] || []).some(rank => myRanks.includes(rank)))
+    const rank = opponent ? this.memory()[opponent.name()].find(rank => myRanks.includes(rank)) : this.chooseRandomRank()
+    return { rank, opponent: opponent || this.chooseRandomOpponent(players) }
+  }
 
-    // Player fished for card they asked for
-    if (roundResult.cardFished() && roundResult.cardFished().rank() == rank) {
-
-      // If memory does not have rank
-      if (!this.memory()[roundPlayer].includes(rank)) {
-
-        this.memory()[roundPlayer].push(rank)
-        this.memory()[roundPlayer].push(rank)
-      } else { // If memory already has that rank entry
-
-        this.memory()[roundPlayer].push(rank)
-      }
-    }
-    // Books getting made situation
-    if (this.memory()[roundPlayer].some(memoryRank => booksMadeArrayIntegers.includes(memoryRank))) {
-      this.memory()[roundPlayer] = this.memory()[roundPlayer].filter(memoryRank => !booksMadeArrayIntegers.includes(memoryRank))
+  shortenMemory() {
+    for (let player in this.memory()) {
+      this.memory()[player] = this.memory()[player].slice(-2)
     }
   }
 }
