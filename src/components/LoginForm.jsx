@@ -7,6 +7,7 @@ class LoginForm extends React.Component {
     this.state = {
       playerName: '',
       opponentCount: 1,
+      difficulty: 'easy',
     }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -25,12 +26,12 @@ class LoginForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    const { playerName, opponentCount } = this.state
-    this.props.onSubmit(playerName, Number(opponentCount))
+    const { playerName, opponentCount, difficulty } = this.state
+    this.props.onSubmit(playerName, Number(opponentCount), difficulty)
   }
 
   render() {
-    const { playerName, opponentCount } = this.state
+    const { playerName, opponentCount, difficulty } = this.state
     return (
       <form onSubmit={this.handleSubmit} className="outlined-container" data-testid="login-form">
         <div className='form-group'>
@@ -55,6 +56,19 @@ class LoginForm extends React.Component {
             {[...Array(8).keys()].map(n => (
               <option key={n + 1} value={n + 1}>{n + 1}</option>
             ))}
+          </select>
+        </div>
+        <div className="form-group">
+          <label className="form-label" htmlFor="difficulty">Difficulty</label>
+          <select
+            id="difficulty"
+            className="form-control form-control--large"
+            value={difficulty}
+            onChange={this.handleChange}
+          >
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
           </select>
         </div>
         <input className="btn full-width" type="submit" value="Start Game" data-testid="start-game-button" />

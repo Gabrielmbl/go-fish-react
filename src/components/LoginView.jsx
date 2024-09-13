@@ -13,9 +13,9 @@ class LoginView extends React.Component {
     onSubmit: PropTypes.func.isRequired,
   }
 
-  handleFormSubmit(playerName, opponentCount) {
+  handleFormSubmit(playerName, opponentCount, difficulty) {
     if (playerName === '' || opponentCount < 1 || opponentCount > 8) return
-    this.props.onSubmit(playerName, opponentCount)
+    this.props.onSubmit(playerName, opponentCount, difficulty)
     this.props.navigateTo('game')
   }
 

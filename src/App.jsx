@@ -16,15 +16,15 @@ class App extends React.Component {
       winners: [],
     }
 
-    this.handleSetPlayerInfo = this.handleSetPlayerInfo.bind(this)
+    this.handleSetGameInfo = this.handleSetGameInfo.bind(this)
     this.playRound = this.playRound.bind(this)
     this.endGame = this.endGame.bind(this)
     this.navigateTo = this.navigateTo.bind(this)
   }
 
-  handleSetPlayerInfo(playerName, opponentCount) {
+  handleSetGameInfo(playerName, opponentCount, difficulty) {
     const player = new Player(playerName)
-    const newGame = new Game(player, opponentCount)
+    const newGame = new Game(player, opponentCount, difficulty)
     newGame.deal()
     this.setState({
       game: newGame,
@@ -79,7 +79,7 @@ class App extends React.Component {
             {this.renderHeader()}
             <div className="flex flex-col justify-center full-height transform-y-15">
               <LoginView
-                onSubmit={this.handleSetPlayerInfo}
+                onSubmit={this.handleSetGameInfo}
                 navigateTo={this.navigateTo}
               />
             </div>
@@ -114,7 +114,7 @@ class App extends React.Component {
             {this.renderHeader()}
             <div className="flex flex-col justify-center full-height  transform-y-15">
               <LoginView
-                onSubmit={this.handleSetPlayerInfo}
+                onSubmit={this.handleSetGameInfo}
                 navigateTo={this.navigateTo}
               />
             </div>
